@@ -4,6 +4,8 @@
 		<transition name="fade" mode="out-in">
 			<router-view></router-view>
 		</transition>
+
+		<!-- Aqui é a parte das palavras -->
 	</div>
 </template>
 
@@ -13,6 +15,26 @@
 	export default {
 		components: {
 			'top-menu': TopMenu
+		},
+
+		data() {
+            return {
+                header: {
+					headers: {
+						Authorization: null
+					}
+				},
+
+				logged: false
+            }
+        },
+
+		mounted: function() {
+			
+		},
+
+		methods: {
+            
 		}
 	}
 </script>

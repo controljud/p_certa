@@ -2,7 +2,7 @@
   <div class="forVue">
 	<div>
 	<b-navbar toggleable="lg" type="dark" variant="info">
-		<router-link to="/" class="navbar-brand" exact >Loteri Map</router-link>
+		<router-link to="/" class="navbar-brand" exact >Palavra Certa!</router-link>
  
 		<b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
@@ -41,13 +41,23 @@
 		},
 
 		methods: {
-			
+			getLogged() {
+				this.header.headers.Authorization = 'Bearer ' + localStorage.getItem('token');
+				
+				axios.get(api.getLogged, this.header).then(response => {
+					this.logged = true;
+				}).catch(error => {
+					if (error.response.status == 401) {
+						localStorage.removeItem('token');
+
+						this.logged = false;
+					}
+				});
+			}
 		},
 
 		created: function() {
-			if (localStorage.getItem('token')) {
-				this.logged = true;
-			}
+			this.getLogged();
 		}
 	}
 </script>

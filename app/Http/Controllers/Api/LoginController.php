@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Tymon\JWTAuth\Exceptions\JWTException;
+use Auth;
 
 class LoginController extends Controller
 {
@@ -59,5 +60,16 @@ class LoginController extends Controller
             ]
         ];
         return response()->json($retorno);
+    }
+
+    public function getLogged()
+    {
+        $usuario = Auth::user();
+
+        return response()->json([
+            'status' => 0,
+            'message' => 'Usuário logado',
+            'data' => $usuario
+        ]);
     }
 }

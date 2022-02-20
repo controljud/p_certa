@@ -23,14 +23,10 @@ Route::post('/login', 'App\Http\Controllers\Api\LoginController@login');
 Route::post('/cadastro', 'App\Http\Controllers\Api\LoginController@cadastro');
 
 Route::group(['middleware' => ['jwt.auth']], function () {
-    Route::group(['prefix' => 'mega'], function() {
+    Route::group(['prefix' => 'historico'], function() {
         Route::get('/sorteados', 'App\Http\Controllers\Api\MegaSenaController@getDadosSorteados');
         
-        Route::put('/update', 'App\Http\Controllers\Api\MegaSenaController@putUpdate');
     });
 
-    Route::post('/jogo', 'App\Http\Controllers\Api\LoteriaController@postJogo');
-    Route::get('/jogos', 'App\Http\Controllers\Api\LoteriaController@getJogos');
-    Route::put('/totais', 'App\Http\Controllers\Api\LoteriaController@putTotais');
-    Route::get('/totais/{id_jogo}', 'App\Http\Controllers\Api\LoteriaController@getTotais');
+    Route::get('/usuario', 'App\Http\Controllers\Api\LoginController@getLogged');
 });
