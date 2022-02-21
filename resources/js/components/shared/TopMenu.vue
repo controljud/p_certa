@@ -6,14 +6,15 @@
  
 		<b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
-		<b-collapse id="nav-collapse" is-nav>
+		<b-collapse id="nav-collapse" is-nav v-if="!logged">
+			<p>Olá {{nome}}</p>
 			<!-- Right aligned nav items -->
 			<b-navbar-nav class="ml-auto">
-				<b-nav-item class="nav-link" @click="$bvModal.show('loginModal')" v-if="!logged">Login</b-nav-item>
-				<b-nav-item class="nav-link" @click="$bvModal.show('cadastroModal')" v-if="!logged">Cadastre-se</b-nav-item>
-				<b-nav-item>
+				<b-nav-item class="nav-link" @click="$bvModal.show('loginModal')">Login</b-nav-item>
+				<b-nav-item class="nav-link" @click="$bvModal.show('cadastroModal')">Cadastre-se</b-nav-item>
+				<!-- <b-nav-item>
 					<router-link :to="{name: 'home'}" class="nav-link" exact v-if="logged">Home</router-link>
-				</b-nav-item>
+				</b-nav-item> -->
 			</b-navbar-nav>
 		</b-collapse>
 	</b-navbar>
@@ -24,6 +25,7 @@
 </template>
 
 <script>
+	import {api} from './../../config';
 	import LoginModal from '../login/LoginModal.vue'
 	import CadastroModal from '../login/CadastroModal.vue'
 	
@@ -36,7 +38,14 @@
 		data() {
 			return {
 				modalLogin: false,
-				logged: false
+				logged: false,
+				nome: null,
+
+				header: {
+					headers: {
+						Authorization: null
+					}
+				}
 			}
 		},
 
@@ -45,6 +54,7 @@
 				this.header.headers.Authorization = 'Bearer ' + localStorage.getItem('token');
 				
 				axios.get(api.getLogged, this.header).then(response => {
+					this.nome = response.data.data.name;
 					this.logged = true;
 				}).catch(error => {
 					if (error.response.status == 401) {
@@ -52,6 +62,8 @@
 
 						this.logged = false;
 					}
+
+					this.logged = false;
 				});
 			}
 		},

@@ -5,7 +5,7 @@
 			<router-view></router-view>
 		</transition>
 
-		<!-- Aqui é a parte das palavras -->
+
 	</div>
 </template>
 

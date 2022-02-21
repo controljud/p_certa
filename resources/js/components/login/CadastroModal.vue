@@ -69,7 +69,7 @@
                                     localStorage.setItem('token', dados.data.token);
 
                                     // TODO - Encaminhar para o home
-                                    this.$router.push('Home');
+                                    window.location.href = "/";
                                 }
                             });
                             

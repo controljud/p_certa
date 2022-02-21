@@ -58,7 +58,7 @@
                         localStorage.setItem('user', dados.data.user);
                         localStorage.setItem('token', dados.data.token);
 
-                        window.location.href = "/home";
+                        window.location.href = "/";
                     } else {
                         this.$toast.warning("Não foi possível realizar o login");
                     }
