@@ -1,13 +1,9 @@
 <template>
-	<div class="container" style="margin-top: 25px">
-        <div class="row">
-            <div class="col-md-2"></div>
-            <div class="col-md-8">
-                <div class="row linhas" v-for="indey in tentativas" :key="indey">
-                    <div v-for="index in tamanho" :key="index" class="letra" @click="changeColor(this)">{{index}}</div>
-                </div>
+	<div class="container" style="margin-top: 25px;">
+        <div class="conteudo">
+            <div class="linhas" v-for="indey in tentativas" :key="indey">
+                <div v-for="index in tamanho" :key="index" class="letra" ref="letra" @click="selectLetter()" v-bind:class="[indey == isActive ? activeClass : inactiveClass]"></div>
             </div>
-            <div class="col-md-2"></div>
         </div>
 	</div>
 </template>
@@ -21,8 +17,26 @@
 		data() {
             return {
                 tamanho: 5,
-                tentativas: 6
+                tentativas: 6,
+                isActive: 1,
+
+                activeClass: 'active',
+                inactiveClass: 'inactive'
             }
+        },
+
+        created() {
+            const component = this;
+
+            this.handler = function (e) {
+                console.log(this.$refs('letra'));
+            }
+            
+            window.addEventListener('keyup', this.handler);
+        },
+
+        beforeDestroy() {
+            window.removeEventListener('keyup', this.handler);
         },
 
 		mounted: function() {
@@ -30,24 +44,46 @@
 		},
 
 		methods: {
-            changeColor(div) {
-                console.log(div);
+            selectLetter() {
+                
+            },
+
+            escreve(letra) {
+                console.log(this.$refs('letra'));
             }
 		}
 	}
 </script>
 
 <style>
-    .letra {
-        float: left;
-        border: 1px solid #696969;
-        width: 35px !important;
-        height: 35px;
-        border-radius: 5px;
-        margin: 5px;
+    .conteudo {
+        width: 320px;
+        margin: 0 auto;
+    }
 
+    .linhas {
+        width: 100%;
+        display: block;
+    }
+
+    .letra {
+        width: 60px;
+        height: 60px;
+        border-radius: 10%;
+        margin: 2px;
+        float: left;
+
+        font-size: 40px;
         text-align: center;
         vertical-align: center;
-        font-size: 12px;
+        color: white;
+    }
+
+    .active {
+        background: #cdcdcd;
+    }
+
+    .inactive {
+        background: #F7F7F7;
     }
 </style>
