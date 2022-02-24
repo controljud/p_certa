@@ -24,7 +24,9 @@
                 inactiveClass: 'inactive',
 
                 linhaAtual: 0,
-                posicao: 0
+                posicao: 0,
+
+                palavraCerta: 'rampa'
             }
         },
 
