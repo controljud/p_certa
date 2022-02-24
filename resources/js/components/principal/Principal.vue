@@ -21,35 +21,55 @@
                 isActive: 1,
 
                 activeClass: 'active',
-                inactiveClass: 'inactive'
+                inactiveClass: 'inactive',
+
+                linhaAtual: 0,
+                posicao: 0
             }
         },
 
         created() {
-            const component = this;
-
-            this.handler = function (e) {
-                console.log(this.$refs('letra'));
-            }
             
-            window.addEventListener('keyup', this.handler);
-        },
-
-        beforeDestroy() {
-            window.removeEventListener('keyup', this.handler);
         },
 
 		mounted: function() {
-			
+            window.addEventListener('keyup', this.escreve);
 		},
 
 		methods: {
+            handler(event) {
+                
+            },
+
             selectLetter() {
                 
             },
 
-            escreve(letra) {
-                console.log(this.$refs('letra'));
+            escreve(event) {
+                if (event.keyCode == 13 && this.linhaAtual < this.tentativas && this.posicao > this.tamanho-1) {
+                    this.linhaAtual++;
+                    this.posicao = 0;
+                    
+                    this.isActive++;
+                }
+
+                if (event.keyCode == 8 && this.posicao >= 1) {
+                    let linhas = document.getElementsByClassName('linhas');
+                    let linha = linhas[this.linhaAtual].children;
+
+                    this.posicao--;
+                    linha[this.posicao].innerHTML = '';
+                }
+                
+                if (this.posicao < this.tamanho && (event.keyCode >= 65 && event.keyCode <= 90)) {
+                    let letra = event.key.toUpperCase();
+
+                    let linhas = document.getElementsByClassName('linhas');
+                    let linha = linhas[this.linhaAtual].children;
+
+                    linha[this.posicao].innerHTML = letra;
+                    this.posicao++;
+                }
             }
 		}
 	}
@@ -80,10 +100,10 @@
     }
 
     .active {
-        background: #cdcdcd;
+        background: #696969;
     }
 
     .inactive {
-        background: #F7F7F7;
+        background: #cdcdcd;
     }
 </style>

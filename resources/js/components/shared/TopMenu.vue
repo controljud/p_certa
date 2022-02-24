@@ -1,12 +1,12 @@
 <template>
   <div class="forVue">
 	<div>
-	<b-navbar toggleable="lg" type="dark" class="navbar-default">
+	<b-navbar toggleable="lg" type="dark" class="navbar-default" right>
 		<router-link to="/" class="navbar-brand" exact >Palavra Certa!</router-link>
  
 		<b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
-		<b-collapse id="nav-collapse" is-nav v-if="!logged">
+		<b-collapse id="nav-collapse" is-nav v-if="!logged" right>
 			<!-- Right aligned nav items -->
 			<b-navbar-nav class="ml-auto">
 				<b-nav-item class="nav-link" @click="$bvModal.show('loginModal')">Login</b-nav-item>
