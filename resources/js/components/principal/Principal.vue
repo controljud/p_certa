@@ -65,7 +65,8 @@
                 linhaAtual: 0,
                 posicao: 0,
 
-                palavraCerta: 'rampa'
+                palavraCerta: 'rampa',
+                letrasJogadas: new Array
             }
         },
 
@@ -74,6 +75,8 @@
         },
 
 		mounted: function() {
+            this.setPosicoesCache();
+
             window.addEventListener('keyup', this.escreve);
             this.setActiveLine(0);
 		},
@@ -122,6 +125,9 @@
                     let posicoes = this.conferePalavra(letras);
                     let erros = 0;
 
+                    this.letrasJogadas += letras.join(',') + '|';
+                    localStorage.setItem('letrasJogadas', this.letrasJogadas);
+
                     for (let i = 0; i < posicoes.length; i++) {
                         if (posicoes[i] != -1) {
                             if (posicoes[i] == i) {
@@ -152,7 +158,7 @@
                     this.posicao--;
                     linha[this.posicao].innerHTML = '';
                 }
-                
+
                 if (this.posicao < this.tamanho && (event.keyCode >= 65 && event.keyCode <= 90)) {
                     let letra = event.key.toUpperCase();
 
@@ -178,6 +184,53 @@
                 }
 
                 return posicoes;
+            },
+
+            setPosicoesCache() {
+                if (localStorage.getItem("letrasJogadas") != null) {
+                    this.letrasJogadas = localStorage.getItem("letrasJogadas");
+
+                    let linhas = document.getElementsByClassName('linhas');
+                    
+
+                    let letrasJogadas = this.letrasJogadas.split('|');
+                    for (let i = 0; i < letrasJogadas.length; i++) {
+                        if (letrasJogadas[i] != '') {
+                            let letras = letrasJogadas[i].split(',');
+                            let linha = linhas[this.linhaAtual].children;
+                            
+                            for (let j = 0; j < letras.length; j++) {
+                                linha[j].innerHTML = letras[j];
+                            }
+
+                            let posicoes = this.conferePalavra(letras);
+
+                            for (let k = 0; k < posicoes.length; k++) {
+                                if (posicoes[k] != -1) {
+                                    if (posicoes[k] == i) {
+                                        linha[k].classList.remove(this.inactiveClass);
+                                        linha[k].classList.add(this.existsExactClass);
+                                    }
+
+                                    if (posicoes[k] != i) {
+                                        linha[k].classList.remove(this.inactiveClass);
+                                        linha[k].classList.add(this.existsClass);
+                                    }
+                                } else {
+                                    linha[k].classList.remove(this.inactiveClass);
+                                    linha[k].classList.add(this.notExistsClass);
+                                }
+                            }
+
+                            if (this.linhaAtual < this.tentativas) {
+                                this.linhaAtual++;
+
+                                this.isActive = this.linhaAtual;
+                                this.setActiveLine(this.linhaAtual);
+                            }
+                        }
+                    }
+                }
             }
 		}
 	}
@@ -247,7 +300,7 @@
     .teclas_teclado {
         width: 320px;
         text-align: center;
-        
+
         display: flex;
     }
 </style>
