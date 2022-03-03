@@ -25,8 +25,8 @@
 
 <script>
 	import {api} from './../../config';
-	import LoginModal from '../login/LoginModal.vue'
-	import CadastroModal from '../login/CadastroModal.vue'
+	import LoginModal from '../login/LoginModal.vue';
+	import CadastroModal from '../login/CadastroModal.vue';
 	
 	export default {
 		components: {

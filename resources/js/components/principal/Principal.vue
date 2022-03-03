@@ -1,8 +1,13 @@
 <template>
 	<div class="container" style="margin-top: 25px;">
+        <div class="row">
+            <div class="col-md-12">
+                <button class="btn btn-warning btn-sm" @click="zerarCache()">Zerar cache (temporário)</button>
+            </div>
+        </div>
         <div class="conteudo">
             <div class="linhas" v-for="indey in tentativas" :key="indey">
-                <div v-for="index in tamanho" :key="index" class="letra inactive" @click="selectLetter()"></div>
+                <div v-for="index in tamanho" :key="index" class="letra inactive"></div>
             </div>
         </div>
 
@@ -44,9 +49,11 @@
 </template>
 
 <script>
+    import {api} from './../../config';
+
 	export default {
 		components: {
-			
+            
 		},
 
 		data() {
@@ -65,17 +72,17 @@
                 linhaAtual: 0,
                 posicao: 0,
 
-                palavraCerta: 'rampa',
+                palavraCerta: '',
                 letrasJogadas: new Array
             }
         },
 
-        created() {
-            
-        },
-
 		mounted: function() {
-            this.setPosicoesCache();
+            axios.get(api.palavraCerta).then(response => {
+                this.palavraCerta = response.data.data.palavraCerta;
+
+                this.setPosicoesCache();
+            });
 
             window.addEventListener('keyup', this.escreve);
             this.setActiveLine(0);
@@ -83,9 +90,8 @@
 
 		methods: {
             setActiveLine(line) {
-                if (line <= this.tentativas) {
+                if (line < this.tentativas) {
                     let linhas = document.getElementsByClassName('linhas');
-
                     let linha = linhas[line].children;
 
                     if (line > 0) {
@@ -151,22 +157,24 @@
                     }
                 }
 
-                if (event.keyCode == 8 && this.posicao >= 1) {
-                    let linhas = document.getElementsByClassName('linhas');
-                    let linha = linhas[this.linhaAtual].children;
+                if (this.linhaAtual < this.tentativas) {
+                    if (event.keyCode == 8 && this.posicao >= 1) {
+                        let linhas = document.getElementsByClassName('linhas');
+                        let linha = linhas[this.linhaAtual].children;
 
-                    this.posicao--;
-                    linha[this.posicao].innerHTML = '';
-                }
+                        this.posicao--;
+                        linha[this.posicao].innerHTML = '';
+                    }
 
-                if (this.posicao < this.tamanho && (event.keyCode >= 65 && event.keyCode <= 90)) {
-                    let letra = event.key.toUpperCase();
+                    if (this.posicao < this.tamanho && (event.keyCode >= 65 && event.keyCode <= 90)) {
+                        let letra = event.key.toUpperCase();
 
-                    let linhas = document.getElementsByClassName('linhas');
-                    let linha = linhas[this.linhaAtual].children;
+                        let linhas = document.getElementsByClassName('linhas');
+                        let linha = linhas[this.linhaAtual].children;
 
-                    linha[this.posicao].innerHTML = letra;
-                    this.posicao++;
+                        linha[this.posicao].innerHTML = letra;
+                        this.posicao++;
+                    }
                 }
             },
 
@@ -192,7 +200,6 @@
 
                     let linhas = document.getElementsByClassName('linhas');
                     
-
                     let letrasJogadas = this.letrasJogadas.split('|');
                     for (let i = 0; i < letrasJogadas.length; i++) {
                         if (letrasJogadas[i] != '') {
@@ -207,12 +214,12 @@
 
                             for (let k = 0; k < posicoes.length; k++) {
                                 if (posicoes[k] != -1) {
-                                    if (posicoes[k] == i) {
+                                    if (posicoes[k] == k) {
                                         linha[k].classList.remove(this.inactiveClass);
                                         linha[k].classList.add(this.existsExactClass);
                                     }
 
-                                    if (posicoes[k] != i) {
+                                    if (posicoes[k] != k) {
                                         linha[k].classList.remove(this.inactiveClass);
                                         linha[k].classList.add(this.existsClass);
                                     }
@@ -223,14 +230,18 @@
                             }
 
                             if (this.linhaAtual < this.tentativas) {
-                                this.linhaAtual++;
-
                                 this.isActive = this.linhaAtual;
-                                this.setActiveLine(this.linhaAtual);
+                                this.setActiveLine(this.linhaAtual + 1);
+                                this.linhaAtual++;
                             }
                         }
                     }
                 }
+            },
+
+            zerarCache() {
+                localStorage.setItem('letrasJogadas', '');
+                this.$toast.success("Cache limpo com sucesso");
             }
 		}
 	}

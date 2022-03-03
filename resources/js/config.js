@@ -4,5 +4,5 @@ export const api = {
     cadastro: '/api/cadastro',
 
     getLogged: '/api/usuario',
-    palavra: '/api/'
+    palavraCerta: '/api/palavra/certa'
 }

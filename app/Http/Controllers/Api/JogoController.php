@@ -15,4 +15,16 @@ class JogoController extends Controller
 
         
     }
+
+    public function getPalavraCerta()
+    {
+        return response()->json([
+            'status' => 0,
+            'message' => '',
+            'data' => [
+                'palavraCerta' => strtoupper('rampa'),
+                'dia' => 2,
+            ]
+        ]);
+    }
 }

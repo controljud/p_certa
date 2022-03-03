@@ -22,10 +22,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/login', 'App\Http\Controllers\Api\LoginController@login');
 Route::post('/cadastro', 'App\Http\Controllers\Api\LoginController@cadastro');
 
+Route::get('/palavra/certa', 'App\Http\Controllers\Api\JogoController@getPalavraCerta');
+
 Route::group(['middleware' => ['jwt.auth']], function () {
     Route::group(['prefix' => 'historico'], function() {
-        Route::get('/sorteados', 'App\Http\Controllers\Api\MegaSenaController@getDadosSorteados');
-        
+        Route::get('/sorteados', 'App\Http\Controllers\Api\JogoController@getDadosSorteados');
     });
 
     Route::get('/usuario', 'App\Http\Controllers\Api\LoginController@getLogged');
