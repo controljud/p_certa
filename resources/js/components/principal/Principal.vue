@@ -60,7 +60,6 @@
             return {
                 tamanho: 5,
                 tentativas: 6,
-                isActive: 0,
 
                 activeClass: 'active',
                 inactiveClass: 'inactive',
@@ -73,7 +72,8 @@
                 posicao: 0,
 
                 palavraCerta: '',
-                letrasJogadas: new Array
+                letrasJogadas: new Array,
+                posicoes: new Array
             }
         },
 
@@ -114,11 +114,10 @@
 
             escreve(event) {
                 if (event.keyCode == 13 && this.linhaAtual < this.tentativas && this.posicao > this.tamanho-1) {
-                    this.isActive++;
-                    this.setActiveLine(this.isActive);
+                    this.linhaAtual++;
+                    this.setActiveLine(this.linhaAtual);
 
                     this.posicao = 0;
-                    this.linhaAtual++;
 
                     let letras = new Array;
                     let linhas = document.getElementsByClassName('linhas');
@@ -128,33 +127,29 @@
                         letras.push(linha[i].innerHTML);
                     }
 
-                    let posicoes = this.conferePalavra(letras);
-                    let erros = 0;
+                    this.conferePalavra(letras);
 
                     this.letrasJogadas += letras.join(',') + '|';
                     localStorage.setItem('letrasJogadas', this.letrasJogadas);
 
-                    for (let i = 0; i < posicoes.length; i++) {
-                        if (posicoes[i] != -1) {
-                            if (posicoes[i] == i) {
+                    for (let i = 0; i < this.posicoes.length; i++) {
+                        if (this.posicoes[i] != -1) {
+                            if (this.posicoes[i] == i) {
                                 linha[i].classList.remove(this.inactiveClass);
                                 linha[i].classList.add(this.existsExactClass);
                             }
 
-                            if (posicoes[i] != i) {
+                            if (this.posicoes[i] != i) {
                                 linha[i].classList.remove(this.inactiveClass);
                                 linha[i].classList.add(this.existsClass);
                             }
                         } else {
-                            erros++;
                             linha[i].classList.remove(this.inactiveClass);
                             linha[i].classList.add(this.notExistsClass);
                         }
                     }
 
-                    if (erros == 0) {
-
-                    }
+                    this.verificaJogo();
                 }
 
                 if (this.linhaAtual < this.tentativas) {
@@ -179,19 +174,16 @@
             },
 
             conferePalavra(letras) {
-                let posicoes = new Array;
                 let confere = this.palavraCerta.toUpperCase();
                 let x = 0;
 
                 for (let i = 0; i < letras.length; i++) {
                     let posicao = confere.indexOf(letras[i]);
 
-                    posicoes.push(posicao);
+                    this.posicoes.push(posicao);
 
                     confere = confere.replace(letras[i], '#');
                 }
-
-                return posicoes;
             },
 
             setPosicoesCache() {
@@ -210,38 +202,57 @@
                                 linha[j].innerHTML = letras[j];
                             }
 
-                            let posicoes = this.conferePalavra(letras);
+                            this.conferePalavra(letras);
 
-                            for (let k = 0; k < posicoes.length; k++) {
-                                if (posicoes[k] != -1) {
-                                    if (posicoes[k] == k) {
+                            for (let k = 0; k < this.posicoes.length; k++) {
+                                if (this.posicoes[k] != -1) {
+                                    console.log('Aqui');
+                                    if (this.posicoes[k] == k) {
                                         linha[k].classList.remove(this.inactiveClass);
                                         linha[k].classList.add(this.existsExactClass);
                                     }
 
-                                    if (posicoes[k] != k) {
+                                    if (this.posicoes[k] != k) {
                                         linha[k].classList.remove(this.inactiveClass);
                                         linha[k].classList.add(this.existsClass);
                                     }
                                 } else {
+                                    console.log('Eu hein');
                                     linha[k].classList.remove(this.inactiveClass);
                                     linha[k].classList.add(this.notExistsClass);
                                 }
                             }
 
                             if (this.linhaAtual < this.tentativas) {
-                                this.isActive = this.linhaAtual;
-                                this.setActiveLine(this.linhaAtual + 1);
                                 this.linhaAtual++;
+
+                                this.setActiveLine(this.linhaAtual);
                             }
                         }
                     }
+
+                    this.verificaJogo();
                 }
             },
 
             zerarCache() {
                 localStorage.setItem('letrasJogadas', '');
                 this.$toast.success("Cache limpo com sucesso");
+            },
+
+            verificaJogo() {
+                let erros = 0;
+                for (let i = 0; i < this.posicoes.length; i++) {
+                    if (this.posicoes[i] != i) {
+                        erros++;
+                    }
+                }
+
+                if (erros == 0) {
+                    this.$toast.success("Você ganhou, que bom!!!");
+                } else {
+
+                }
             }
 		}
 	}
